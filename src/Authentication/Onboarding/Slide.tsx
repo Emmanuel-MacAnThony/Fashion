@@ -1,4 +1,4 @@
-import { StyleSheet, View, Dimensions, Image } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import React from "react";
 import { BORDER_RADIUS } from "./Onboarding";
 import { Text } from "../../components/Theme";
@@ -9,10 +9,9 @@ export const SLIDER_HEIGHT = 0.61 * HEIGHT;
 interface SlideProps {
   right?: boolean;
   label: string;
-  picture: number;
 }
 
-const Slide: React.FC<SlideProps> = ({ label, right, picture }) => {
+const Slide: React.FC<SlideProps> = ({ label, right }) => {
   const transform = [
     { translateY: (SLIDER_HEIGHT - 100) / 2 },
     { translateX: right ? WIDTH / 2 - 50 : -WIDTH / 2 + 50 },
@@ -20,9 +19,6 @@ const Slide: React.FC<SlideProps> = ({ label, right, picture }) => {
   ];
   return (
     <View style={styles.container}>
-      <View style={styles.underlay}>
-        <Image source={picture} style={styles.picture} />
-      </View>
       <View style={[styles.labelContainer, { transform }]}>
         <Text variant="hero" style={styles.label}>
           {label}
@@ -59,6 +55,7 @@ const styles = StyleSheet.create({
   },
   underlay: {
     ...StyleSheet.absoluteFillObject,
-    // justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
 });
