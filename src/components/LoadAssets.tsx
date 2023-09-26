@@ -1,11 +1,12 @@
 import React, { useEffect, useState, ReactElement, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AppLoading from "expo-app-loading";
+//import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import { InitialState, NavigationContainer } from "@react-navigation/native";
 import Constants from "expo-constants";
+import * as SplashScreen from "expo-splash-screen";
 
 const NAVIGATION_STATE_KEY = `NAVIGATION_STATE_KEY-${Constants?.expoConfig?.sdkVersion}`;
 
@@ -33,6 +34,8 @@ interface LoadAssetsProps {
   assets?: number[];
   children: ReactElement | ReactElement[];
 }
+
+SplashScreen.preventAutoHideAsync();
 
 const LoadAssets = ({ assets, fonts, children }: LoadAssetsProps) => {
   const [isNavigationReady, setIsNavigationReady] = useState(!__DEV__);
@@ -67,12 +70,26 @@ const LoadAssets = ({ assets, fonts, children }: LoadAssetsProps) => {
     []
   );
 
+  const onLayoutRootView = useCallback(async () => {
+    if (ready || isNavigationReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [ready, isNavigationReady]);
+
   if (!ready || !isNavigationReady) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
-    <NavigationContainer {...{ onStateChange, initialState }}>
+    <NavigationContainer
+      {...{ onStateChange, initialState }}
+      onReady={onLayoutRootView}
+    >
       <StatusBar style="light" />
       {children}
     </NavigationContainer>
