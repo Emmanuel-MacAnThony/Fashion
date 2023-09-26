@@ -1,7 +1,8 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Onboarding from "./src/Authentication/Onboarding/Onboarding";
 import { LoadAssets } from "./src/components";
+import { Welcome, Onboarding } from "./src/Authentication";
+import { ThemeProvider } from "./src/components/Theme";
 
 const AuthenticationStack = createStackNavigator();
 
@@ -16,14 +17,17 @@ const AuthenticationNavigator = () => {
   return (
     <AuthenticationStack.Navigator screenOptions={{ headerShown: false }}>
       <AuthenticationStack.Screen name="OnBoarding" component={Onboarding} />
+      <AuthenticationStack.Screen name="Welcome" component={Welcome} />
     </AuthenticationStack.Navigator>
   );
 };
 
 export default function App() {
   return (
-    <LoadAssets {...{ fonts }}>
-      <AuthenticationNavigator />
-    </LoadAssets>
+    <ThemeProvider>
+      <LoadAssets {...{ fonts }}>
+        <AuthenticationNavigator />
+      </LoadAssets>
+    </ThemeProvider>
   );
 }

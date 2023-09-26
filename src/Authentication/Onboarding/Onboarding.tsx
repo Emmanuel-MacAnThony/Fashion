@@ -10,9 +10,10 @@ import Animated, {
   useAnimatedRef,
 } from "react-native-reanimated";
 import SubSlide from "./SubSlide";
+import Dot from "./Dot";
 
 const { width: WIDTH } = Dimensions.get("window");
-const BORDER_RADIUS = 75;
+export const BORDER_RADIUS = 75;
 
 const slides = [
   {
@@ -21,6 +22,7 @@ const slides = [
     description:
       "Confused about your outfit? Don't worry! Find the best outfit here!",
     color: "#BFEAF5",
+    picture: require("../assets/1.png"),
   },
   {
     title: "Playful",
@@ -28,6 +30,7 @@ const slides = [
     description:
       "Hating the clothes in your wardrobe? Explore hundreds of outfits ideas",
     color: "#BEECC4",
+    picture: require("../assets/2.png"),
   },
   {
     title: "Eccentric",
@@ -35,6 +38,7 @@ const slides = [
     description:
       "Create your individual & unique style and look amazing everyday",
     color: "#FFE4D9",
+    picture: require("../assets/3.png"),
   },
   {
     title: "Funky",
@@ -42,11 +46,13 @@ const slides = [
     description:
       "Discover the latest trends in fashion and explore your personality",
     color: "#FFDDDD",
+    picture: require("../assets/4.png"),
   },
 ];
 
 const Onboarding = () => {
   const x = useSharedValue(0);
+  const currentIndex = useDerivedValue(() => x.value / WIDTH);
   const scroll = useAnimatedRef<Animated.ScrollView>();
   const onScroll = useAnimatedScrollHandler({
     onScroll: ({ contentOffset }) => {
@@ -88,37 +94,52 @@ const Onboarding = () => {
           scrollEventThrottle={16}
           ref={scroll}
         >
-          {slides.map(({ title }, index) => (
-            <Slide key={index} right={!!(index % 2)} label={title} />
+          {slides.map(({ title, picture }, index) => (
+            <Slide
+              key={index}
+              right={!!(index % 2)}
+              label={title}
+              picture={picture}
+            />
           ))}
         </Animated.ScrollView>
       </Animated.View>
       <View style={styles.footer}>
         <Animated.View style={[StyleSheet.absoluteFill, rBackground]} />
-        <Animated.View
-          style={[
-            styles.footerContent,
-            { width: WIDTH * slides.length, flex: 1 },
-            rFooterStyle,
-          ]}
-        >
-          {slides.map(({ subtitle, description }, index) => {
-            const last = index === slides.length - 1;
-            return (
-              <SubSlide
-                key={index}
-                onPress={() => {
-                  if (scroll.current) {
-                    scroll.current.scrollTo({
-                      x: WIDTH * (index + 1),
-                      animated: true,
-                    });
-                  }
-                }}
-                {...{ subtitle, description, last }}
-              />
-            );
-          })}
+        <Animated.View style={[styles.footerContent]}>
+          <View style={styles.pagination}>
+            {slides.map((_, index) => (
+              <Dot key={index} index={index} currentIndex={currentIndex} />
+            ))}
+          </View>
+          <Animated.View
+            style={[
+              {
+                flex: 1,
+                flexDirection: "row",
+                width: WIDTH * slides.length,
+              },
+              rFooterStyle,
+            ]}
+          >
+            {slides.map(({ subtitle, description }, index) => {
+              const last = index === slides.length - 1;
+              return (
+                <SubSlide
+                  key={index}
+                  onPress={() => {
+                    if (scroll.current) {
+                      scroll.current.scrollTo({
+                        x: WIDTH * (index + 1),
+                        animated: true,
+                      });
+                    }
+                  }}
+                  {...{ subtitle, description, last }}
+                />
+              );
+            })}
+          </Animated.View>
         </Animated.View>
       </View>
     </View>
@@ -139,11 +160,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderTopLeftRadius: BORDER_RADIUS,
+  },
+  pagination: {
+    ...StyleSheet.absoluteFillObject,
+    height: BORDER_RADIUS,
+    justifyContent: "center",
+    alignItems: "center",
     flexDirection: "row",
   },
   slider: {
     height: SLIDER_HEIGHT,
-    //backgroundColor: "cyan",
     borderBottomRightRadius: BORDER_RADIUS,
   },
 });

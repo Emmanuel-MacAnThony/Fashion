@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions, Image } from "react-native";
 import React from "react";
+import { BORDER_RADIUS } from "./Onboarding";
+import { Text } from "../../components/Theme";
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 export const SLIDER_HEIGHT = 0.61 * HEIGHT;
@@ -7,9 +9,10 @@ export const SLIDER_HEIGHT = 0.61 * HEIGHT;
 interface SlideProps {
   right?: boolean;
   label: string;
+  picture: number;
 }
 
-const Slide: React.FC<SlideProps> = ({ label, right }) => {
+const Slide: React.FC<SlideProps> = ({ label, right, picture }) => {
   const transform = [
     { translateY: (SLIDER_HEIGHT - 100) / 2 },
     { translateX: right ? WIDTH / 2 - 50 : -WIDTH / 2 + 50 },
@@ -17,8 +20,13 @@ const Slide: React.FC<SlideProps> = ({ label, right }) => {
   ];
   return (
     <View style={styles.container}>
+      <View style={styles.underlay}>
+        <Image source={picture} style={styles.picture} />
+      </View>
       <View style={[styles.labelContainer, { transform }]}>
-        <Text style={styles.label}>{label}</Text>
+        <Text variant="hero" style={styles.label}>
+          {label}
+        </Text>
       </View>
     </View>
   );
@@ -41,5 +49,16 @@ const styles = StyleSheet.create({
   labelContainer: {
     height: 100,
     justifyContent: "center",
+  },
+  picture: {
+    ...StyleSheet.absoluteFillObject,
+    width: undefined,
+    height: undefined,
+    borderBottomRightRadius: BORDER_RADIUS,
+    //top: BORDER_RADIUS,
+  },
+  underlay: {
+    ...StyleSheet.absoluteFillObject,
+    // justifyContent: "flex-end",
   },
 });

@@ -1,29 +1,7 @@
-import { StyleSheet, Text } from "react-native";
 import React from "react";
-import { RectButtonProperties, RectButton } from "react-native-gesture-handler";
-
-interface ButtonProps {
-  variant?: "default" | "primary";
-  label: string;
-  onPress: () => void;
-  style?: RectButtonProperties["style"];
-}
-
-const Button: React.FC<ButtonProps> = ({ variant, label, onPress }) => {
-  const backgroundColor =
-    variant === "primary" ? "#2CB9B0" : "rgba(12,13,52, 0.05)";
-  const color = variant === "primary" ? "white" : "#0C0D34";
-  return (
-    <RectButton
-      style={[styles.container, { backgroundColor: backgroundColor }]}
-      {...{ onPress }}
-    >
-      <Text style={[styles.label, { color: color }]}>{label}</Text>
-    </RectButton>
-  );
-};
-
-export default Button;
+import { StyleSheet } from "react-native";
+import { Text, useTheme } from "./Theme";
+import { RectButton, RectButtonProperties } from "react-native-gesture-handler";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,9 +11,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  label: {
-    fontSize: 15,
-    fontFamily: "SFProDisplay-Regular",
-    textAlign: "center",
-  },
 });
+
+interface ButtonProps {
+  variant: "default" | "primary";
+  label?: string;
+  onPress: () => void;
+  style?: RectButtonProperties["style"];
+}
+
+const Button = ({ variant, label, onPress, style }: ButtonProps) => {
+  const { colors } = useTheme();
+  const backgroundColor =
+    variant === "primary" ? colors.primary : colors.background2;
+  const color = variant === "primary" ? colors.background : colors.secondary;
+
+  return (
+    <RectButton
+      style={[styles.container, style, { backgroundColor }]}
+      {...{ onPress }}
+    >
+      <Text variant="button" style={{ color }}>
+        {label}
+      </Text>
+    </RectButton>
+  );
+};
+
+Button.defaultProps = { variant: "default" };
+
+export default Button;
