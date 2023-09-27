@@ -55,6 +55,7 @@ const theme = createTheme({
     m: 10,
     l: 25,
     xl: 75,
+    o: 0,
   },
   textVariants: {
     hero: {
@@ -90,6 +91,11 @@ const theme = createTheme({
       fontFamily: "SFProDisplay-Medium",
       fontSize: 15,
       color: "secondary",
+    },
+    white: {
+      fontFamily: "SFProDisplay-Medium",
+      fontSize: 15,
+      color: "background",
     },
     header: {
       fontSize: 12,
