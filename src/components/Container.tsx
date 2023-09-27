@@ -2,6 +2,8 @@ import { StyleSheet, Image, Dimensions, StatusBar } from "react-native";
 import React from "react";
 import { Box, useTheme } from "./Theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+//@ts-ignore
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 interface ContainerProps {
   children: React.ReactNode;
