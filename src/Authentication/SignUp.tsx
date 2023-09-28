@@ -4,51 +4,51 @@ import Footer from "./components/Footer";
 import { AuthNavigationProps } from "../components/Navigation";
 import { Box, Text } from "../components/Theme";
 import TextInput from "../components/Form/TextInput";
-import Checkbox from "../components/Form/Checkbox";
-import { BorderlessButton } from "react-native-gesture-handler";
 import { useFormik } from "formik";
 import { TextInput as RNTextInput } from "react-native";
 import * as Yup from "yup";
 
-const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
-  const LoginSchema = Yup.object().shape({
+const SignUp = ({ navigation }: AuthNavigationProps<"SignUp">) => {
+  const SignUpSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
       .required("Required"),
+    confirmPassword: Yup.string()
+      .equals([Yup.ref("password")], "Passwords don't match")
+      .required("Required"),
   });
 
-  const {
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    values,
-    errors,
-    touched,
-    setFieldValue,
-  } = useFormik({
-    validationSchema: LoginSchema,
-    initialValues: { email: "", password: "", remember: false },
-    onSubmit: () => navigation.navigate("Home"),
-  });
+  const { handleChange, handleBlur, handleSubmit, errors, touched } = useFormik(
+    {
+      validationSchema: SignUpSchema,
+      initialValues: {
+        email: "",
+        password: "",
+        confirmPassword: "",
+      },
+      onSubmit: () => console.log(""),
+    }
+  );
   const password = useRef<RNTextInput>(null);
+  const confirmPassword = useRef<RNTextInput>(null);
   const footer = (
     <Footer
-      title="Don't have an account?"
-      action="Sign Up here"
-      onPress={() => navigation.navigate("SignUp")}
+      title="Already have an account?"
+      action="Login here"
+      onPress={() => navigation.navigate("Login")}
     />
   );
 
   return (
-    <Container footer={footer} pattern={0}>
+    <Container footer={footer} pattern={1}>
       <Box padding={"xl"}>
         <Text variant={"title1"} textAlign={"center"} marginBottom={"l"}>
-          Welcome Back
+          Create Account
         </Text>
         <Text textAlign={"center"} variant={"body"} marginBottom={"l"}>
-          Use your credentials below and login to your account
+          Let us know your name, email, and your password
         </Text>
         <Box marginBottom={"m"}>
           <TextInput
@@ -64,7 +64,7 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
             onSubmitEditing={() => password.current?.focus()}
           />
         </Box>
-        <Box>
+        <Box marginBottom={"m"}>
           <TextInput
             ref={password}
             icon="lock"
@@ -81,30 +81,26 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
             secureTextEntry
           />
         </Box>
-        <Box
-          flexDirection={"row"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          marginVertical={"l"}
-        >
-          <Checkbox
-            label="Remember me"
-            checked={values.remember}
-            onChange={() => setFieldValue("remember", !values.remember)}
-          />
-          <BorderlessButton
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text variant="button" color="primary">
-              Forgot Password
-            </Text>
-          </BorderlessButton>
-        </Box>
+        <TextInput
+          ref={confirmPassword}
+          icon="lock"
+          placeholder="Confirm your password"
+          onChangeText={handleChange("confirmPassword")}
+          onBlur={handleBlur("confirmPassword")}
+          error={errors.confirmPassword}
+          touched={touched.confirmPassword}
+          autoComplete="password"
+          autoCapitalize="none"
+          returnKeyType="go"
+          returnKeyLabel="go"
+          onSubmitEditing={() => handleSubmit()}
+          secureTextEntry
+        />
         <Box alignItems="center" marginTop="m">
           <Button
             variant="primary"
-            label="Log into your account"
-            onPress={handleSubmit}
+            label="Create your account"
+            onPress={() => {}}
           />
         </Box>
       </Box>
@@ -112,4 +108,4 @@ const Login = ({ navigation }: AuthNavigationProps<"Login">) => {
   );
 };
 
-export default Login;
+export default SignUp;

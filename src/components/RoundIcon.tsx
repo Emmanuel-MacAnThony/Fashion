@@ -31,7 +31,7 @@ const RoundIcon = ({
       {...{ backgroundColor }}
     >
       <Text
-        variant={"body"}
+        variant={"button"}
         style={{ width: iconSize, height: iconSize }}
         {...{ color }}
       >
